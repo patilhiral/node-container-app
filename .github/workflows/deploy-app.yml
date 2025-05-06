@@ -7,7 +7,7 @@ on:
       - main
 env:
   REGISTRY_NAME: ${{ secrets.AZURE_ACR_LOGIN_SERVER}}
-  IMAGE_NAME: containerdemoapp
+  IMAGE_NAME: nodecontainerapp
 
 #Job to build and deploy application
 jobs:
@@ -17,6 +17,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Log in to Azure using service principal
         run: |
           az login --service-principal \

@@ -1,5 +1,5 @@
 #use node.js v22 aphine image for smaller size
-FROM node:22-alpine
+FROM node:22
 
 
 #set working dir inside the container
