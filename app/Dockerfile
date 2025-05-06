@@ -6,11 +6,11 @@ FROM node:22
 WORKDIR /app
 
 #Copy the package.json and package-lock.json 
-COPY package*.json ./
+COPY app/package*.json ./
 RUN npm install --verbose
 
 #copy all remaining app file
-COPY . .
+COPY app ./
 
 #EXPOSE port 3000
 EXPOSE 3000
