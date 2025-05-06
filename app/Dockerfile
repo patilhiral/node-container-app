@@ -7,7 +7,7 @@ WORKDIR /app
 
 #Copy the package.json and package-lock.json 
 COPY package*.json ./
-RUN npm install 
+RUN npm install --verbose
 
 #copy all remaining app file
 COPY . .
