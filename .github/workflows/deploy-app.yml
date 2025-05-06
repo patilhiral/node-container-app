@@ -54,4 +54,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          images: ${{ secrets.AZURE_CONTAINER_REGISTRY_URL }}/${{ secrets.AZURE_CONTAINER_IMAGE_NAME }}:latest
+          images: ${{ secrets.AZURE_ACR_LOGIN_SERVER}}/${{ secrets.AZURE_CONTAINER_IMAGE_NAME }}:${{ steps.get-version.outputs.version }}
