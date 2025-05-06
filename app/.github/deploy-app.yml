@@ -1,0 +1,58 @@
+name: Build and deploy to Azure web app
+
+#This workflow will trigger on code push on main branch
+on:
+  push:
+    branches:
+      - main
+env:
+  REGISTRY_NAME: ${{ secrets.AZURE_ACR_LOGIN_SERVER}}
+  IMAGE_NAME: containerdemoapp
+
+#Job to build and deploy application
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+       - name: Log in to Azure using service principal
+        run: |
+          az login --service-principal \
+            --username ${{ secrets.AZURE_CLIENT_ID }} \
+            --password ${{ secrets.AZURE_CLIENT_SECRET }} \
+            --tenant ${{ secrets.AZURE_TENANT_ID }}
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Azure Container Registry Login
+        run: |
+          az acr login --name ${{ env.REGISTRY_NAME }}
+
+      - name: Extract latest image version
+        id: get-version
+        run: |
+          VERSION=$(az acr repository show-tags --name $REGISTRY_NAME --repository $IMAGE_NAME --orderby time_desc --top 1 --output tsv 2>/dev/null || echo "v1.0.0")
+          echo "Latest tag: $VERSION"
+          BASE_VERSION=${VERSION#v}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE_VERSION"
+          PATCH=$((PATCH + 1))
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          echo "New version: $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        run: |
+          docker build -t $REGISTRY_NAME/$IMAGE_NAME:${{ steps.get-version.outputs.version }} -f app/Dockerfile .
+
+      - name: Push image to ACR
+        run: |
+          docker push $REGISTRY_NAME/$IMAGE_NAME:${{ steps.get-version.outputs.version }}
+
+      - name: Deploy container image to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          images: ${{ secrets.AZURE_CONTAINER_REGISTRY_URL }}/${{ secrets.AZURE_CONTAINER_IMAGE_NAME }}:latest
+
+      

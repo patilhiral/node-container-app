@@ -1,0 +1,6 @@
+location              = "UK South"
+resource_group_name   = "rg-node-contianer"
+acr_name              = "acrnodecontainer"
+app_service_plan_name = "service-plan-node-container"
+web_app_name          = "WebAppNodeContainer"
+docker_image_name     = "nodecontainerapp:latest"
