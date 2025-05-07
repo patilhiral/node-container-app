@@ -15,7 +15,7 @@ This workflow runs on every push to the `main` branch and performs the following
 
 ## 🔐 Required Repository Secrets
 
-These secrets must be configured in your GitHub repository:
+These secrets must be configured in your GitHub repository::
 
 - AZURE_ACR_LOGIN_SERVER
 - AZURE_CLIENT_ID

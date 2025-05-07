@@ -26,4 +26,4 @@ This document provides step-by-step instructions to deploy a Dockerized Node.js 
    - Tag the image appropriately and push it using `docker push`.
 
 4. **CI/CD workflow**
-   - Once the code is merged with main branch it will be deplyoyed to Azure.
+   - Once the code is merged with main branch it will be deplyoyed to Azure web app.
